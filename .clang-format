@@ -1,0 +1,24 @@
+# ROS C++ Style Guide 基于 Google Style，主要差别是列宽 120 而不是 80。
+# 用 clang-format 一键格式化：
+#     clang-format -i src/*.cpp include/hero_chassis_controller/*.h
+---
+Language: Cpp
+BasedOnStyle: Google
+
+ColumnLimit: 120
+IndentWidth: 2
+ContinuationIndentWidth: 4
+AccessModifierOffset: -1
+PointerAlignment: Right
+DerivePointerAlignment: false
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBraces: Attach
+ConstructorInitializerIndentWidth: 4
+IncludeBlocks: Preserve
+SortIncludes: true
+SpaceAfterCStyleCast: false
+SpacesBeforeTrailingComments: 2

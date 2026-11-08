@@ -1,0 +1,17 @@
+<launch>
+  <!-- 只加载控制器，不起 Gazebo。
+       用途：Gazebo 已经跑着的时候，改完控制器想重装一遍，不必重启整个仿真。
+       用法：
+         roslaunch hero_chassis_controller load_controller.launch
+       若提示控制器已存在，先卸掉：
+         rosservice call /controller_manager/switch_controller \
+             "{start_controllers: [], stop_controllers: ['hero_chassis_controller'], strictness: 2}"
+  -->
+
+  <rosparam file="$(find hero_chassis_controller)/config/hero_chassis_controller.yaml"
+            command="load"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        respawn="false" output="screen"
+        args="hero_chassis_controller joint_state_controller"/>
+</launch>

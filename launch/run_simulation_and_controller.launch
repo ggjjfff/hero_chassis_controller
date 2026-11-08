@@ -1,0 +1,26 @@
+<launch>
+  <!-- 起 Gazebo + 英雄底盘 + 本控制器。
+       用法：
+         roslaunch hero_chassis_controller run_simulation_and_controller.launch
+       想一启动就动起来（不等手动 unpause）：
+         roslaunch hero_chassis_controller run_simulation_and_controller.launch paused:=false
+  -->
+
+  <!-- 默认不冻结物理引擎：少一步 unpause，第一次跑更容易看到结果。
+       想复现「车僵在空中」的现象，传 paused:=true。 -->
+  <arg name="paused" default="false"/>
+
+  <include file="$(find rm_description_for_task)/launch/hero.launch">
+    <arg name="load_chassis" value="true"/>
+    <arg name="roller_type" value="realistic"/>
+    <arg name="paused" value="$(arg paused)"/>
+  </include>
+
+  <!-- 参数树的顶层 key 就是控制器名，spawner 按名字去 /<name>/type 找插件。 -->
+  <rosparam file="$(find hero_chassis_controller)/config/hero_chassis_controller.yaml"
+            command="load"/>
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner"
+        respawn="false" output="screen"
+        args="hero_chassis_controller joint_state_controller"/>
+</launch>

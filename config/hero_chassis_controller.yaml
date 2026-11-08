@@ -1,0 +1,94 @@
+# hero_chassis_controller 的参数
+#
+# 这棵参数树挂在 /hero_chassis_controller/ 下面（见 run_simulation_and_controller.launch），
+# controller_manager 的 spawner 会按顶层的 key 去匹配控制器名。
+#
+# PID 参数可以在运行时用 rqt_reconfigure 在线调，不必重编译；
+# 调出满意的一组之后再写回这个文件。
+
+hero_chassis_controller:
+  type: hero_chassis_controller/HeroChassisController
+
+  # ---------------------------------------------------------------------------
+  # 运动学参数
+  # 全部取自 rm_description_for_task/urdf/hero/chassis.urdf.xacro，改模型时记得同步。
+  # ---------------------------------------------------------------------------
+  wheel_radius: 0.07625    # 轮半径 R，单位 m
+  wheel_base: 0.4          # 前后轴距，单位 m
+  wheel_track: 0.4         # 左右轮距，单位 m
+  # 派生量 K = (wheel_base + wheel_track) / 2 = 0.4，代码里算，不要在这里填
+
+  # ---------------------------------------------------------------------------
+  # 轮子关节名（EffortJointInterface）
+  # ---------------------------------------------------------------------------
+  left_front_joint: left_front_wheel_joint
+  right_front_joint: right_front_wheel_joint
+  left_back_joint: left_back_wheel_joint
+  right_back_joint: right_back_wheel_joint
+
+  # ---------------------------------------------------------------------------
+  # 限幅
+  # ---------------------------------------------------------------------------
+  # 速度上限。urdf 里 joint 的 max_velocity 是 50 rad/s，
+  # 换算成线速度是 50 * 0.07625 = 3.8 m/s，所以 2.0 m/s 还有余量。
+  max_linear_velocity: 2.0
+  max_angular_velocity: 3.0
+  # 力矩上限，与 urdf 里 joint 的 max_effort="5" 保持一致
+  effort_limit: 5.0
+
+  # ---------------------------------------------------------------------------
+  # 速度指令的坐标系
+  # ---------------------------------------------------------------------------
+  # chassis : /cmd_vel 直接当作车体系速度（考核要求 5）
+  # world   : /cmd_vel 当作 world_frame 下的速度，经 tf 转到车体系后执行（考核要求 7）
+  velocity_mode: chassis
+  world_frame: odom
+  base_frame: base_link
+
+  # ---------------------------------------------------------------------------
+  # 里程计
+  # ---------------------------------------------------------------------------
+  publish_tf: true
+  odom_frame: odom
+
+  # ---------------------------------------------------------------------------
+  # 四个轮子的速度 PID（control_toolbox::Pid）
+  #
+  # 输入是「期望角速度 - 实测角速度」，单位 rad/s；
+  # 输出是关节力矩，单位 N·m，限幅 ±effort_limit。
+  #
+  # 下面这组是偏保守的起步值，用来保证第一次跑起来不过冲、不抖。
+  # 真正调参的步骤见 README「调 PID」一节。
+  # ---------------------------------------------------------------------------
+  left_front_pid:
+    p: 0.5
+    i: 1.0
+    d: 0.0
+    i_clamp_min: -2.0
+    i_clamp_max: 2.0
+
+  right_front_pid:
+    p: 0.5
+    i: 1.0
+    d: 0.0
+    i_clamp_min: -2.0
+    i_clamp_max: 2.0
+
+  left_back_pid:
+    p: 0.5
+    i: 1.0
+    d: 0.0
+    i_clamp_min: -2.0
+    i_clamp_max: 2.0
+
+  right_back_pid:
+    p: 0.5
+    i: 1.0
+    d: 0.0
+    i_clamp_min: -2.0
+    i_clamp_max: 2.0
+
+# 单独留一份 joint_state_controller，controller_spawner 一起加载。
+joint_state_controller:
+  type: joint_state_controller/JointStateController
+  publish_rate: 100

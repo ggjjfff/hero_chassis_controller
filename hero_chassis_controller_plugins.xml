@@ -1,0 +1,10 @@
+<library path="lib/libhero_chassis_controller">
+  <class name="hero_chassis_controller/HeroChassisController"
+         type="hero_chassis_controller::HeroChassisController"
+         base_class_type="controller_interface::ControllerBase">
+    <description>
+      麦克纳姆轮底盘控制器：/cmd_vel → 逆运动学 → 四路速度 PID → 力矩；
+      同时用正运动学累加里程计并发布 /odom 与 odom→base_link 的 tf。
+    </description>
+  </class>
+</library>

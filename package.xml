@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>hero_chassis_controller</name>
+  <version>0.1.0</version>
+  <description>
+    麦克纳姆轮底盘控制器：订阅 /cmd_vel，经逆运动学解算四轮期望转速，
+    由四个独立的 PID 闭环输出力矩；同时用正运动学累加里程计并发布 /odom 与 tf。
+  </description>
+
+  <maintainer email="hero@example.com">Hero Chassis Team</maintainer>
+  <license>BSD-3-Clause</license>
+
+  <url type="repository">https://github.com/gdut-dynamic-x/rm_template</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <!-- 控制框架 -->
+  <depend>roscpp</depend>
+  <depend>controller_interface</depend>
+  <depend>hardware_interface</depend>
+  <depend>pluginlib</depend>
+  <depend>control_toolbox</depend>
+  <depend>realtime_tools</depend>
+
+  <!-- 消息与坐标变换 -->
+  <depend>geometry_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>tf2_geometry_msgs</depend>
+  <depend>urdf</depend>
+
+  <!-- 机器人模型 -->
+  <depend>rm_description_for_task</depend>
+
+  <build_depend>roslint</build_depend>
+
+  <test_depend>gtest</test_depend>
+  <test_depend>rostest</test_depend>
+
+  <export>
+    <controller_interface plugin="${prefix}/hero_chassis_controller_plugins.xml"/>
+  </export>
+</package>
