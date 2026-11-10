@@ -5,9 +5,15 @@ project(hero_chassis_controller)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-## 把警告当错误。学生项目最怕的是「一堆警告里藏着一条真问题」，
-## 强制清零之后，每次编译都是干净的。
-add_definitions(-Wall -Werror)
+## 打开常用警告，但不设 -Werror。
+##
+## -Werror 会把「一条无害的警告」直接升级成编译失败。示例包
+## simple_chassis_controller 里用了它，但那是作者在固定的工具链上调通的。
+## 本项目要在未知版本的 gcc 上编，且编译一次要点时间，
+## 让警告拦住编译进程不划算 —— 先编过、先跑起来，再回头清警告。
+## 需要严格模式时手动加：
+##     catkin build hero_chassis_controller --cmake-args -DCMAKE_CXX_FLAGS=-Werror
+add_definitions(-Wall)
 
 find_package(catkin REQUIRED
     COMPONENTS
