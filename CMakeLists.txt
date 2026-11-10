@@ -39,7 +39,6 @@ catkin_package(
     ${PROJECT_NAME}
     CATKIN_DEPENDS
     roscpp
-    roslint
     controller_interface
     hardware_interface
     pluginlib
@@ -52,6 +51,17 @@ catkin_package(
     tf2_geometry_msgs
     urdf
     )
+
+## 注意：roslint 不出现在上面的 CATKIN_DEPENDS 里，这是刻意的。
+##
+## CATKIN_DEPENDS 的语义是「别人依赖我这个包时，要一并帮我拉取的依赖」，
+## 它必须在 package.xml 里有对应的 run 依赖（<depend> 或 <exec_depend>）。
+## roslint 只是构建期做代码规范检查的工具，下游根本不需要，
+## 放进 CATKIN_DEPENDS 会让 catkin 报：
+##   catkin_package() DEPENDS on the catkin package 'roslint'
+##   which must therefore be listed as a run dependency in the package.xml
+## 但把它写成 run 依赖又是错的 —— 运行时不跑 lint。
+## 正确做法就是：只在 find_package 里出现，不进 CATKIN_DEPENDS。
 
 ###########
 ## Build ##
@@ -93,9 +103,19 @@ if (CATKIN_ENABLE_TESTING)
   ## 运动学单元测试：不依赖 ROS、不依赖 Gazebo，1 秒内出结果。
   ## 这是整个工程里性价比最高的一道防线 —— 公式错在这一步就拦住，
   ## 不用等到「起 Gazebo 看车乱走」才发现。
-  catkin_add_gtest(test_mecanum_kinematics test/test_kinematics.cpp)
-  if (TARGET test_mecanum_kinematics)
-    target_link_libraries(test_mecanum_kinematics ${PROJECT_NAME}_kinematics)
+  ##
+  ## 外面套一层 find_package(GTest QUIET)：
+  ## 镜像里可能没装 libgtest-dev（ros-base 不带），那样 catkin_add_gtest
+  ## 会在 cmake 阶段直接报错，把整个控制器一起拖下水。
+  ## 单元测试是加分项，不该成为编译通过的前置条件 —— 没有就跳过，主库照常编。
+  find_package(GTest QUIET)
+  if (GTest_FOUND OR GTEST_FOUND)
+    catkin_add_gtest(test_mecanum_kinematics test/test_kinematics.cpp)
+    if (TARGET test_mecanum_kinematics)
+      target_link_libraries(test_mecanum_kinematics ${PROJECT_NAME}_kinematics)
+    endif()
+  else()
+    message(STATUS "hero_chassis_controller: 未找到 gtest，跳过单元测试（不影响控制器本身）")
   endif()
 endif ()
 
