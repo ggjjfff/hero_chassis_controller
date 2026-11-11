@@ -273,7 +273,7 @@ catkin build hero_chassis_controller --no-deps
 - **打滑**：轮式里程计无法感知打滑，`/odom` 会漂。仿真里麦轮横移时打滑尤其明显。
 - **tf**：`odom→base_link` 的 `z` 固定为 0。轮子里程计推不出高度，
   这和绝大多数轮式机器人的做法一致。要看真实高度得用 Gazebo 的 `/gazebo/model_states`。
-- **`vehicle_mode: world` 依赖 tf 可用性**：启动最初几帧可能查不到变换，
+- **`velocity_mode: world` 依赖 tf 可用性**：启动最初几帧可能查不到变换，
   此时控制器会「停在原地」并打印一条限频警告，而不是用错误方向乱冲。
 
 ---
