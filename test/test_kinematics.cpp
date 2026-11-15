@@ -1,4 +1,4 @@
-// Copyright 2026 Hero Chassis Team
+// Copyright 2026 Guo Jiafeng
 //
 // Licensed under the BSD-3-Clause License (the "License");
 // you may not use this file except in compliance with the License.

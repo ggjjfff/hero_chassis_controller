@@ -7,10 +7,10 @@
     由四个独立的 PID 闭环输出力矩；同时用正运动学累加里程计并发布 /odom 与 tf。
   </description>
 
-  <maintainer email="hero@example.com">Hero Chassis Team</maintainer>
+  <maintainer email="3324573891@qq.com">Guo Jiafeng</maintainer>
   <license>BSD-3-Clause</license>
 
-  <url type="repository">https://github.com/gdut-dynamic-x/rm_template</url>
+  <url type="repository">https://github.com/ggjjfff/hero_chassis_controller</url>
 
   <buildtool_depend>catkin</buildtool_depend>
 
