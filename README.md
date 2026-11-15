@@ -13,7 +13,7 @@
 | 5. 使用逆运动学计算各轮期望速度（订阅 `/cmd_vel`） | ✅ |
 | 6. 使用正运动学实现里程计（`/odom` + tf） | ✅ |
 | 7. 使用 tf 实现世界坐标下的速度控制 | ✅ |
-| 8. 其他特色功能 | ✅ 运动学独立成库 + gtest 单测、`chassis`/`world` 双速度模式 |
+| 8. 其他特色功能 | ✅ 运动学独立成库 + 单元测试、双速度模式 |
 
 ---
 
@@ -269,7 +269,7 @@ catkin build hero_chassis_controller --no-deps
 
 - **实时性**：`update()` 里发布 `nav_msgs/Odometry` 会产生内存分配，
   严格来说违反实时约束。正经做法是用 `realtime_tools::RealtimePublisher`
-  在非实时线程发。学生的仿真作业里这点开销可以接受，但要知道这是个妥协。
+  在非实时线程发。这台车只在 Gazebo 里跑，这点开销可以接受，但要知道这是个妥协。
 - **打滑**：轮式里程计无法感知打滑，`/odom` 会漂。仿真里麦轮横移时打滑尤其明显。
 - **tf**：`odom→base_link` 的 `z` 固定为 0。轮子里程计推不出高度，
   这和绝大多数轮式机器人的做法一致。要看真实高度得用 Gazebo 的 `/gazebo/model_states`。
@@ -285,3 +285,9 @@ catkin build hero_chassis_controller --no-deps
 - [effort_controllers/joint_velocity_controller](https://github.com/ros-controls/ros_controllers/blob/noetic-devel/effort_controllers/src/joint_velocity_controller.cpp)
 - [Mecanum wheel (Wikipedia)](https://en.wikipedia.org/wiki/Mecanum_wheel)
 - 运动学推导细节见 [`doc/derivation.md`](doc/derivation.md)
+
+---
+
+## 许可证
+
+BSD-3-Clause，全文见 [LICENSE](LICENSE)。
